@@ -141,10 +141,22 @@ Gpt_tenuErrorStatus Gpt_StartTimer(Gpt_ChannelNum copy_enuCh_Num,  u16 Value)
  **/
 void Gpt_StopTimer(Gpt_ChannelNum Channel);
 /**
+ *Description: is used to Set Output compare  match value in OCCRx and according to CTC mode
+*Input parameters :Gpt_ChannelNum Channel,  u16 Value
+ *
+ * Return: the error status of the function, it has the following options
+	1-Gpt_enuOk,
+	2-Gpt_enuNullPointerException,
+	3-Gpt_enuWrongParamValue,
+ **/
+Gpt_tenuErrorStatus Gpt_enuSetOutCompareMatchVal(Gpt_ChannelNum copy_enuCh_Num,  u16 Value);
+
+/**
  *Description: is used to get time elapsed
  *Input parameters :Gpt_ChannelNum
  * Return: u16
  **/
+
 u16  Gpt_GetTimeElapsed (Gpt_ChannelNum Channel);
 /**
  *Description: is used to get time remaining

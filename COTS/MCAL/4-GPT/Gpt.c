@@ -201,6 +201,26 @@ void Gpt_StopTimer(Gpt_ChannelNum Channel)
 	}
 }
 
+Gpt_tenuErrorStatus Gpt_enuSetOutCompareMatchVal(Gpt_ChannelNum copy_enuCh_Num,  u16 Value)
+{
+	Gpt_tenuErrorStatus Loc_enuErrorStatus= Gpt_enuOk;
+
+
+	switch(copy_enuCh_Num)
+	{
+	case Channel_0:
+		OCR0 = (u8)Value;
+		break;
+	case Channel_1:
+		OCR1A = Value;
+		break;
+	case Channel_2:
+		OCR2 = (u8)Value;
+		break;
+	}
+
+	return Loc_enuErrorStatus;
+}
 
 u16 Gpt_GetTimeElapsed (Gpt_ChannelNum Channel)
 {
