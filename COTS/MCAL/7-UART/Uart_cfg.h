@@ -80,8 +80,8 @@
 //**************************************
 //UART Mode Select:
 //-----------------------------
-#define UART_ASYNCHRONOUS_OPERATION 			0x40
-#define UART_SYNCHRONOUS_OPERATION 				0x00
+#define UART_ASYNCHRONOUS_OPERATION 			0x00
+#define UART_SYNCHRONOUS_OPERATION 				0x40
 /*Select one of the following options:
 -------------------------------------
 1- UART_ASYNCHRONOUS_OPERATION

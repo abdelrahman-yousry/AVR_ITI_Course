@@ -33,7 +33,7 @@ Uart_tenuErrorStatus Uart_enuRecieveByteSync(pu16 Copy_u16Byte);
 void Uart_enuSendByteAsync(u16 Copy_u16Byte);
 void Uart_enuRecieveByteAsync(pu16 Copy_pu16Byte);
 
-Uart_tenuErrorStatus Uart_enuInterruptCtrl(Uart_enuInterrCtrl Copy_enuIntCtrl);
+void Uart_enuInterruptCtrl(Uart_enuInterrCtrl Copy_enuIntCtrl);
 
 
 /**REG CALL BACK FUNCTION**/

@@ -24,14 +24,16 @@ pcbf Uart_UdreCbf;
 void Uart_enuInit(void)
 {
 	u8 Reg_u8Data = 0b10000000;
-
 #if UART_RX_CTRL == RX_ENABLE
 	UCSRB |= RX_ENABLE;
 #endif
 #if UART_TX_CTRL == TX_ENABLE
 	UCSRB |= TX_ENABLE;
 #endif
-
+#if UART_BAUDE_RATE == UART_BAUDE_RATE_9600
+	UBRRH = 0;
+	UBRRL = 51;
+#endif
 #if UART_RX_COMPLETE_INTERRUPT == UART_RX_COMPLETE_INTERRUPT_ENABLE
 	SET_BIT(SREG,7);
 	SET_BIT(UCSRB,7);
@@ -70,16 +72,12 @@ void Uart_enuInit(void)
 			|UART_PARITY_MODE
 			|UART_STOP_BIT_NUMBER
 			|UART_CLOCK_POLARITY;
-	UCSRC |= Reg_u8Data;
-#if UART_BAUDE_RATE == UART_BAUDE_RATE_9600
-	UBRRH = 0;
-	UBRRL = 51;
-#endif
+	UCSRC = Reg_u8Data;
+
 #if UART_BAUDE_RATE == UART_BAUDE_RATE_4800
 	UBRRH = 0;
 	UBRRL = 103;
 #endif
-	Gie_vidInterruptEnable();
 }
 Uart_tenuErrorStatus Uart_enuSendByteSync(u16 Copy_u16Byte)
 {
@@ -120,21 +118,18 @@ Uart_tenuErrorStatus Uart_enuRecieveByteSync(pu16 Copy_u16Byte)
 void Uart_enuSendByteAsync(u16 Copy_u16Byte)
 {
 	UDR = Copy_u16Byte;
-	SET_BIT(SREG,7);
 	SET_BIT(UCSRB,6);
 }
 void Uart_enuRecieveByteAsync(pu16 Copy_u16Byte)
 {
 	Uart_gpRecievedVal = Copy_u16Byte;
-	SET_BIT(SREG,7);
 	SET_BIT(UCSRB,7);
 }
-Uart_tenuErrorStatus Uart_enuInterruptCtrl(Uart_enuInterrCtrl Copy_enuIntCtrl)
+void Uart_enuInterruptCtrl(Uart_enuInterrCtrl Copy_enuIntCtrl)
 {
 	switch (Copy_enuIntCtrl)
 	{
 	case Tx_InterruptEnbaled:
-		SET_BIT(SREG,7);
 		SET_BIT(UCSRB,6);
 		break;
 	case Tx_InterruptDisbaled:
@@ -178,6 +173,7 @@ Uart_tenuErrorStatus Uart_enuTxRegCbf(pcbf Uart_TxCbfNotify)
 Uart_tenuErrorStatus Uart_enuRxRegCbf(pcbf Uart_RxCbfNotify)
 {
 	Uart_tenuErrorStatus Loc_ErrorStatus = Uart_enuOk;
+	*Uart_gpRecievedVal = UDR;
 	if(Uart_RxCbfNotify)
 	{
 		Uart_RxCbf = Uart_RxCbfNotify;
@@ -193,6 +189,7 @@ Uart_tenuErrorStatus Uart_enuRxRegCbf(pcbf Uart_RxCbfNotify)
 /*******************Call the call back funcs in the handlers*******************/
 ISR(USART_RXC_vect)
 {
+	SET_BIT(PORTA,PORT_u8PIN_0);
 	if(Uart_RxCbf != NULL)
 	{
 		Uart_RxCbf();
