@@ -17,6 +17,8 @@
 #define MAX_VALUE_TIMER1	0xffff
 #define MAX_VALUE_TIMER2	0xff
 
+#define MAX_NUM_OF_PRESCALERS_CLK		3
+#define MAX_NUM_OF_CHANNELS				3
 
 #define MODE_VALIDATION		0x0100
 #endif /* GPT_PRV_H_ */

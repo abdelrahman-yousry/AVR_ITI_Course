@@ -14,10 +14,10 @@
 
 
 
-static u8 Gpt_u8arrClk_Prescaler[3];
+static u8 Gpt_u8arrClk_Prescaler[MAX_NUM_OF_PRESCALERS_CLK];
 static u8 Gpt_u8CtcModeFlag[3]={0};
-static pfunc Ovf_CallBackfunc[3];
-static pfunc Ocm_CallBackfunc[4];
+static pfunc Ovf_CallBackfunc[MAX_NUM_OF_CHANNELS];
+static pfunc Ocm_CallBackfunc[MAX_NUM_OF_CHANNELS];
 
 Gpt_tenuErrorStatus Gpt_Init(Gpt_ConfigType* copy_TimeCfg){
 	Gpt_tenuErrorStatus Loc_enuErrorStatus=Gpt_enuOk;
@@ -37,7 +37,6 @@ Gpt_tenuErrorStatus Gpt_Init(Gpt_ConfigType* copy_TimeCfg){
 		switch (copy_TimeCfg->Gpt_ChannelNo)
 		{
 		case Channel_0:
-			TCNT0=((u8)copy_TimeCfg->Gpt_u16TimerInitialValue);
 			TempVar = TCCR0;
 			TempVar &= MODE_CLEAR_MASK ;	// will be &=
 			TempVar |= ((u8)copy_TimeCfg->Gpt_u16CompareOutputMode|Mode);
@@ -46,24 +45,20 @@ Gpt_tenuErrorStatus Gpt_Init(Gpt_ConfigType* copy_TimeCfg){
 			Gpt_u8arrClk_Prescaler[Channel_0]=copy_TimeCfg->Gpt_u8Clk;
 			if(copy_TimeCfg->Gpt_WaveGenerationMode == GPT_MODE_TIM_02_CTC)
 			{
-//				SET_BIT(PORTA,PORT_u8PIN_0);
 				Gpt_u8CtcModeFlag[0]=1;
 			}
 			break;
 		case Channel_1:
 			TCCR1A=(copy_TimeCfg->Gpt_u16CompareOutputMode);
 			TCCR1B=Mode;
-			TCNT1=(copy_TimeCfg->Gpt_u16TimerInitialValue);
 			TIMSK=(copy_TimeCfg->Gpt_u8OvfInterruptControl)|(copy_TimeCfg->Gpt_u8OcmInterruptControl);
 			Gpt_u8arrClk_Prescaler[Channel_1]=copy_TimeCfg->Gpt_u8Clk;
 			if(Mode == (u8)GPT_MODE_TIM1_CTC)
 			{
-
 				Gpt_u8CtcModeFlag[1]=1;
 			}
 			break;
 		case Channel_2:
-			TCNT2=((u8)copy_TimeCfg->Gpt_u16TimerInitialValue);
 			TempVar = TCCR2;
 			TempVar &= MODE_CLEAR_MASK ;	// will be &=
 			TempVar |= (copy_TimeCfg->Gpt_u16CompareOutputMode|Mode);
@@ -82,7 +77,6 @@ Gpt_tenuErrorStatus Gpt_Init(Gpt_ConfigType* copy_TimeCfg){
 }
 
 
-// no
 Gpt_tenuErrorStatus Gpt_StartTimer(Gpt_ChannelNum copy_enuCh_Num,  u16 Value)
 {
 	Gpt_tenuErrorStatus Loc_enuErrorStatus= Gpt_enuOk;
@@ -201,6 +195,7 @@ void Gpt_StopTimer(Gpt_ChannelNum Channel)
 	}
 }
 
+
 Gpt_tenuErrorStatus Gpt_enuSetOutCompareMatchVal(Gpt_ChannelNum copy_enuCh_Num,  u16 Value)
 {
 	Gpt_tenuErrorStatus Loc_enuErrorStatus= Gpt_enuOk;
@@ -221,6 +216,7 @@ Gpt_tenuErrorStatus Gpt_enuSetOutCompareMatchVal(Gpt_ChannelNum copy_enuCh_Num, 
 
 	return Loc_enuErrorStatus;
 }
+
 
 u16 Gpt_GetTimeElapsed (Gpt_ChannelNum Channel)
 {
@@ -291,10 +287,9 @@ Gpt_tenuErrorStatus Gpt_enuRegisterOvfCbf(pfunc CallBackFn,Gpt_ChannelNum channe
 	switch (channel)
 	{
 	case Channel_0:
-		SET_BIT(PORTA,PORT_u8PIN_1);
 		if(CallBackFn)
 		{
-			SET_BIT(PORTA,PORT_u8PIN_1);
+			//			SET_BIT(PORTA,PORT_u8PIN_1);
 			Ovf_CallBackfunc[Channel_0] = CallBackFn;
 		}
 		else
@@ -331,12 +326,13 @@ Gpt_tenuErrorStatus Gpt_enuRegisterOvfCbf(pfunc CallBackFn,Gpt_ChannelNum channe
 }
 Gpt_tenuErrorStatus Gpt_enuRegisterOcmCbf(pfunc CallBackFn,Gpt_ChannelNum channel){
 	Gpt_tenuErrorStatus Loc_enuStatusError = Gpt_enuOk;
+
 	switch (channel)
 	{
 	case Channel_0:
 		if(CallBackFn)
 		{
-
+//			SET_BIT(PORTA,PORT_u8PIN_0);
 			Ocm_CallBackfunc[Channel_0] = CallBackFn;
 		}
 		else
@@ -348,16 +344,6 @@ Gpt_tenuErrorStatus Gpt_enuRegisterOcmCbf(pfunc CallBackFn,Gpt_ChannelNum channe
 		if(CallBackFn)
 		{
 			Ocm_CallBackfunc[Channel_1] = CallBackFn;
-		}
-		else
-		{
-			Loc_enuStatusError = Gpt_enuNullPointerException;
-		}
-		break;
-	case 3:
-		if(CallBackFn)
-		{
-			Ocm_CallBackfunc[3] = CallBackFn;//Timer1B
 		}
 		else
 		{
@@ -383,35 +369,50 @@ Gpt_tenuErrorStatus Gpt_enuRegisterOcmCbf(pfunc CallBackFn,Gpt_ChannelNum channe
 
 ISR(TIMER0_OVF_vect)
 {
-	Ovf_CallBackfunc[Channel_0]();
+	if(Ovf_CallBackfunc[Channel_0])
+	{
+		Ovf_CallBackfunc[Channel_0]();
+	}
 	//		SET_BIT(PORTA,PORT_u8PIN_1);
 }
 ISR(TIMER1_OVF_vect)
 {
-	//	static u16 Loc_u16No_of_ovf=0;
-	Ovf_CallBackfunc[Channel_1]();
+	if(Ovf_CallBackfunc[Channel_1])
+	{
+		//	static u16 Loc_u16No_of_ovf=0;
+		Ovf_CallBackfunc[Channel_1]();
+	}
 }
 ISR(TIMER2_OVF_vect)
 {
-	//	static u16 Loc_u16No_of_ovf=0;
-	Ovf_CallBackfunc[Channel_2]();
+	if(Ovf_CallBackfunc[Channel_2])
+	{
+		//	static u16 Loc_u16No_of_ovf=0;
+		Ovf_CallBackfunc[Channel_2]();
+	}
 }
 
 ISR(TIMER0_COMP_vect)
 {
-//	SET_BIT(PORTA,PORT_u8PIN_0);
-	Ocm_CallBackfunc[Channel_0]();
+	if(Ocm_CallBackfunc[Channel_0])
+	{
+//			SET_BIT(PORTA,PORT_u8PIN_0);
+		Ocm_CallBackfunc[Channel_0]();
+	}
 }
 ISR(TIMER1_COMPA_vect)
 {
-//	SET_BIT(PORTA,PORT_u8PIN_0);
-	Ocm_CallBackfunc[Channel_1]();
+	if(Ocm_CallBackfunc[Channel_1])
+	{
+		//SET_BIT(PORTA,PORT_u8PIN_0);
+		Ocm_CallBackfunc[Channel_1]();
+	}
 }
-ISR(TIMER1_COMPB_vect)
-{
-	Ocm_CallBackfunc[3]();//Timer1B
-}
+
 ISR(TIMER2_COMP_vect)
 {
-	Ocm_CallBackfunc[Channel_2]();
+	if(Ocm_CallBackfunc[Channel_2])
+	{
+		Ocm_CallBackfunc[Channel_2]();
+	}
 }
