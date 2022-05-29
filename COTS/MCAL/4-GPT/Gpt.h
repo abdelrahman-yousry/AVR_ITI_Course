@@ -42,15 +42,25 @@
 #define GPT_MODE_TIM1_CTC						  0x0108 // TCCR1B // CTC
 
 
-/********************************CLOCK SELECT Timer0/1/2********************************/
-		//timer stopped
-#define GPT_CLK_NO_PRESCALING					0x01
-#define GPT_CLK_PRESCALER_8						0x02
-#define GPT_CLK_PRESCALER_64					0x03
-#define GPT_CLK_PRESCALER_256					0x04
-#define GPT_CLK_PRESCALER_1024					0x05
-#define GPT_CLK_EXT_FALLING_TIMER0				0x06		//count on falling edge on To pin
-#define GPT_CLK_EXT_RISING_TIMER0				0x07		//count on rising edge on To pin
+/********************************CLOCK SELECT Timer0/1********************************/
+
+#define GPT_CLK_CH_01_NO_PRESCALING					            0x01		//timer stopped
+#define GPT_CLK_CH_01_PRESCALER_8						        0x02
+#define GPT_CLK_CH_01_PRESCALER_64					            0x03
+#define GPT_CLK_CH_01_PRESCALER_256					            0x04
+#define GPT_CLK_CH_01_PRESCALER_1024					        0x05
+#define GPT_CLK_CH_01_EXT_FALLING_TIMER0				        0x06		//count on falling edge on To pin
+#define GPT_CLK_CH_01_EXT_RISING_TIMER0				            0x07		//count on rising edge on To pin
+
+/********************************CLOCK SELECT Timer2********************************/
+#define GPT_CLK_CH_2_NO_PRESCALING					            0x01		//timer stopped
+#define GPT_CLK_CH_2_PRESCALER_8						        0x02
+#define GPT_CLK_CH_2_PRESCALER_32					            0x03
+#define GPT_CLK_CH_2_PRESCALER_64					            0x04
+#define GPT_CLK_CH_2_PRESCALER_128					            0x05
+#define GPT_CLK_CH_2_PRESCALER_256					            0x06		//count on falling edge on To pin
+#define GPT_CLK_CH_2_PRESCALER_1024					            0x07		//count on rising edge on To pin
+
 
 /*******************************Interrupt Control*****************************/
 
