@@ -49,15 +49,25 @@
 #define PWM_u8MODE_CH1_PHASE_CORRECT_TOP_ICR1				0X12
 #define PWM_u8MODE_CH1_FAST_MODE_TOP_ICR1					0X1A
 
-/********************************CLOCK SELECT Timer0/1/2********************************/
+/********************************CLOCK SELECT Timer0/1********************************/
 
-#define PWM_CLK_NO_PRESCALING					            0x01		//timer stopped
-#define PWM_CLK_PRESCALER_8						            0x02
-#define PWM_CLK_PRESCALER_64					            0x03
-#define PWM_CLK_PRESCALER_256					            0x04
-#define PWM_CLK_PRESCALER_1024					            0x05
-#define PWM_CLK_EXT_FALLING_TIMER0				            0x06		//count on falling edge on To pin
-#define PWM_CLK_EXT_RISING_TIMER0				            0x07		//count on rising edge on To pin
+#define PWM_CLK_CH_01_NO_PRESCALING					            0x01		//timer stopped
+#define PWM_CLK_CH_01_PRESCALER_8						        0x02
+#define PWM_CLK_CH_01_PRESCALER_64					            0x03
+#define PWM_CLK_CH_01_PRESCALER_256					            0x04
+#define PWM_CLK_CH_01_PRESCALER_1024					        0x05
+#define PWM_CLK_CH_01_EXT_FALLING_TIMER0				        0x06		//count on falling edge on To pin
+#define PWM_CLK_CH_01_EXT_RISING_TIMER0				            0x07		//count on rising edge on To pin
+
+/********************************CLOCK SELECT Timer2********************************/
+#define PWM_CLK_CH_2_NO_PRESCALING					            0x01		//timer stopped
+#define PWM_CLK_CH_2_PRESCALER_8						        0x02
+#define PWM_CLK_CH_2_PRESCALER_32					            0x03
+#define PWM_CLK_CH_2_PRESCALER_64					            0x04
+#define PWM_CLK_CH_2_PRESCALER_128					            0x05
+#define PWM_CLK_CH_2_PRESCALER_256					            0x06		//count on falling edge on To pin
+#define PWM_CLK_CH_2_PRESCALER_1024					            0x07		//count on rising edge on To pin
+
 
 /*******************************Interrupt Control*****************************/
 
@@ -126,7 +136,7 @@ Pwm_tenuErrorStatus Pwm_vidInit(Pwm_ConfigType* copy_TimeCfg);
 
 /**
  *Description: is used to Start timer
-*Input parameters :Pwm_ChannelNum Channel,  u16 Value
+ *Input parameters :Pwm_ChannelNum Channel,  u16 Value
  *
  * Return: the error status of the function, it has the following options
 	1-Pwm_enuOk,
@@ -137,7 +147,7 @@ Pwm_tenuErrorStatus Pwm_StartTimer(Pwm_ChannelNum copy_enuCh_Num,  u16 Value);
 
 /**
  *Description: is used to Set Output compare  match value in OCCRx and according to CTC mode
-*Input parameters :Pwm_ChannelNum Channel,  u16 Value
+ *Input parameters :Pwm_ChannelNum Channel,  u16 Value
  *
  * Return: the error status of the function, it has the following options
 	1-Pwm_enuOk,
@@ -148,7 +158,7 @@ Pwm_tenuErrorStatus Pwm_enuSetOutCompareMatchVal(Pwm_ChannelNum copy_enuCh_Num, 
 
 /**
  *Description: is used to Set ICR value in ICR1
-*Input parameters :Pwm_ChannelNum Channel,  u16 Value
+ *Input parameters :Pwm_ChannelNum Channel,  u16 Value
  *
  * Return: void
  **/
